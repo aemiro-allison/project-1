@@ -1,7 +1,7 @@
 # Run away from Nyan Cat!
 The goal of the game is to have the player run away from a nyan cat as a yarn ball. The nyan cat will chase after you as the yarn ball until it catches you.
 
-![Moving Cyan Cat](http://www.nyan.cat/cats/original.gif)
+![Moving Cyan Cat](https://lh5.ggpht.com/nct7SKXWQ3vQYQki0hQEGidMPxk_-8JqkhPnSWEjuv8bF3pd2Qj3RuAa-5IXa_hCdQ=w170)
 
 ## Inital Game Structure
 ---
