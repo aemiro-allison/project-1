@@ -1,4 +1,6 @@
 let $els = {};
+let boundary = {};
+
 const keys = {};
 const speed = 5;
 
@@ -9,6 +11,13 @@ $(document).ready(() => {
     gameWindow: $('#game-window'),
     nyanCat: $('#nyan-cat'),
     yarnBall: $('#yarn-ball'),
+  };
+
+  boundary = {
+    left: 0,
+    right: window.innerWidth - $els.yarnBall.outerWidth(),
+    top: 0,
+    bottom: window.innerHeight - $els.yarnBall.outerHeight(),
   };
 });
 
@@ -33,22 +42,34 @@ const handlePlayerMovement = () => {
   // box2 left-right
 
   if (keys[68]) {
-    $els.yarnBall.css('left', $els.yarnBall.position().left + speed);
-    // box2.style.left = `${box2XPos += speed}px`;
+    if (!($els.yarnBall.position().left >= boundary.right)) {
+      $els.yarnBall.css('left', $els.yarnBall.position().left + speed);
+    } else {
+      $els.yarnBall.css('left', $els.yarnBall.position().left - speed);
+    }
   }
   if (keys[65]) {
-    $els.yarnBall.css('left', $els.yarnBall.position().left - speed);
-    // box2.style.left = `${box2XPos -= speed}px`;
+    if (!($els.yarnBall.position().left <= boundary.left)) {
+      $els.yarnBall.css('left', $els.yarnBall.position().left - speed);
+    } else {
+      $els.yarnBall.css('left', $els.yarnBall.position().left + speed);
+    }
   }
 
   // box2 up-down
   if (keys[87]) {
-    $els.yarnBall.css('top', $els.yarnBall.position().top - speed);
-    // box2.style.top = `${box2YPos -= speed}px`;
+    if (!($els.yarnBall.position().top >= boundary.top)) {
+      $els.yarnBall.css('top', $els.yarnBall.position().top + speed);
+    } else {
+      $els.yarnBall.css('top', $els.yarnBall.position().top - speed);
+    }
   }
   if (keys[83]) {
-    $els.yarnBall.css('top', $els.yarnBall.position().top + speed);
-    // box2.style.top = `${box2YPos += speed}px`;
+    if (!($els.yarnBall.position().top <= boundary.bottom)) {
+      $els.yarnBall.css('top', $els.yarnBall.position().top - speed);
+    } else {
+      $els.yarnBall.css('top', $els.yarnBall.position().top + speed);
+    }
   }
 };
 
