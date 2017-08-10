@@ -5,6 +5,7 @@ html, body {
 
 /* Game Bar drawer styles */
 
+/* the game bar is the drawer*/
 #game-bar {
   position: absolute;
   z-index: 2;
