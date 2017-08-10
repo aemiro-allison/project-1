@@ -3,55 +3,50 @@ let boundary = {};
 const keys = {};
 let yarnBall = null;
 
-const Physics = {
-  speed: 5,
-  jumpHeight: 800,
-  gravity: 2,
-  currVelocity: 0,
-  acceleration: 2,
-  friction: 0.98,
-  accelerating: false,
-  boundary: {},
+//   // Àlex Garcés implementation on Stack Overflow from Mar 13 '16
+//   // https://stackoverflow.com/questions/2440377/javascript-collision-detection
+//   function isCollide(a, b) {
+//     const aRect = a[0].getBoundingClientRect();
+//     const bRect = b[0].getBoundingClientRect();
 
-  accelerate($obj, axis, value) {
-    // change the velocity of the obj by
-    // changing the acceleration of it.
+//     return !(
+//       ((aRect.top + aRect.height) < (bRect.top)) ||
+//       (aRect.top > (bRect.top + bRect.height)) ||
+//       ((aRect.left + aRect.width) < bRect.left) ||
+//       (aRect.left > (bRect.left + bRect.width))
+//     );
+//   };
 
-    if (axis === 'x') {
-      $obj.css('left', $obj.position().left - value);
-    }
+// function changeBgColor(shouldChangeBg) {
+//   if (shouldChangeBg) {
+//     $els.nyanCat[0].style.backgroundColor = 'green';
+//     $els.yarnBall[0].style.backgroundColor = 'green';
+//   } else {
+//     $els.nyanCat[0].style.backgroundColor = 'grey';
+//     $els.yarnBall[0].style.backgroundColor = 'grey';
+//   }
+// }
+class Obstacle {
+  constructor(y, width, height) {
+    // create obstacle element.
+    this.el = $('<div>');
+    this.el.css('width', width);
+    this.el.css('height', height);
+    this.el.attr('class', 'obstacle');
+    this.el.appendTo('#obstacles');
 
-    if (axis === 'y') {
-      $obj.css('top', $obj.position().top - value);
-    }
-  },
+    // uniquely idenity each obstacle
+    this.id = Math.floor(Math.random() * 2);
 
-  applyGravity($obj) {
-    // apply gravity to that obj until the bottom
-    // is reached.
-    const currYPos = $obj.position().top;
-    if (currYPos <= boundary.bottom) {
-      $obj.css('top', currYPos + ((this.currVelocity += 0.05) * this.gravity));
-    } else {
-      this.currVelocity = 0;
-    }
-  },
+    this.y = y;
+    this.x = boundary.right + 300;
+    this.speed = 5;
+  }
 
-  // Àlex Garcés implementation on Stack Overflow from Mar 13 '16
-  // https://stackoverflow.com/questions/2440377/javascript-collision-detection
-  isCollide(a, b) {
-    const aRect = a.getBoundingClientRect();
-    const bRect = b.getBoundingClientRect();
-
-    return !(
-      ((aRect.top + aRect.height) < (bRect.top)) ||
-      (aRect.top > (bRect.top + bRect.height)) ||
-      ((aRect.left + aRect.width) < bRect.left) ||
-      (aRect.left > (bRect.left + bRect.width))
-    );
-  },
-
-};
+  move() {
+    this.x -= this.speed;
+  }
+}
 
 class Player {
   constructor(xAxis, yAxis) {
@@ -80,6 +75,18 @@ class Player {
     }
   }
 
+  isCollide(a, b) {
+    const aRect = a[0].getBoundingClientRect();
+    const bRect = b[0].getBoundingClientRect();
+
+    return !(
+      ((aRect.top + aRect.height) < (bRect.top)) ||
+      (aRect.top > (bRect.top + bRect.height)) ||
+      ((aRect.left + aRect.width) < bRect.left) ||
+      (aRect.left > (bRect.left + bRect.width))
+    );
+  }
+
   jump() {
     let counter = 0;
     if (!this.isJumping && (this.y >= boundary.bottom)) {
@@ -93,7 +100,7 @@ class Player {
 
         counter += 2;
         console.log('interval');
-        this.y -= 40 * this.friction;
+        this.y -= 30 * this.friction;
       }, 1000 / 60);
     }
   }
@@ -157,7 +164,7 @@ class Player {
 // by setting to true.
 document.addEventListener('keydown', (evt) => {
   keys[evt.keyCode] = true;
-  console.log(evt.keyCode);
+  // console.log(evt.keyCode);
 });
 
 // deactivate the key pressed by setting to false.
@@ -165,75 +172,17 @@ document.addEventListener('keyup', (evt) => {
   keys[evt.keyCode] = false;
 });
 
-// jump
-// document.addEventListener('keypress', (evt) => {
-//   if (evt.keyCode === 32) {
-//     yarnBall.jump();
-//   }
-// });
-
 // when click on body, toggle drawer class on game-bar
 $('#toggle-drawer').click((evt) => {
   evt.stopPropagation();
   $els.gameBar.toggleClass('drawer');
 });
 
-// let isJumping = false;
-// const jump = () => {
-//   // let counter = Physics.jumpHeight;
-//   if (!isJumping) {
-//     isJumping = true;
-//     const id = setInterval(() => {
-//       // check if the height.
-//       if ($els.yarnBall.position().top >= Physics.jumpHeight) {
-//         isJumping = false;
-//         Physics.applyGravity($els.yarnBall);
-//         clearInterval(id);
-//       } else {
-//         Physics.accelerate($els.yarnBall, 'y', +(Physics.speed));
-//       }
-//     }, 1000 / 60);
-//   }
-// };
-
-// const movePlayer = () => {
-//   // box2 left-right
-//   if (keys[68]) {
-//     if (!($els.yarnBall.position().left >= boundary.right)) {
-//       Physics.accelerate($els.yarnBall, 'x', -(Physics.speed));
-//     }
-//   }
-
-//   if (keys[65]) {
-//     if (!($els.yarnBall.position().left <= boundary.left)) {
-//       Physics.accelerate($els.yarnBall, 'x', +(Physics.speed));
-//     }
-//   }
-
-//   // box2 up-down
-//   if (keys[87]) {
-//     if (($els.yarnBall.position().top >= boundary.top)) {
-//       // bounce away towards bottom with x force
-//       Physics.accelerate($els.yarnBall, 'y', +(Physics.speed));
-//     }
-//   }
-
-//   if (keys[83]) {
-//     if (($els.yarnBall.position().top <= boundary.bottom)) {
-//       // bounce away towards top with x force
-//       Physics.accelerate($els.yarnBall, 'y', -(Physics.speed));
-//     }
-//   }
-// };
-
-// // player jump
-// document.addEventListener('keypress', (evt) => {
-//   if (evt.keyCode === 32) {
-//     // make player jump with appriopate physics.
-//     jump();
-//   }
-// });
-
+const update = () => {
+  yarnBall.draw($els.yarnBall);
+  // changeBgColor(isCollide($els.yarnBall, $els.nyanCat));
+  requestAnimationFrame(update);
+};
 
 $(document).ready(() => {
   $els = {
@@ -255,8 +204,3 @@ $(document).ready(() => {
 
   requestAnimationFrame(update);
 });
-
-const update = () => {
-  yarnBall.draw($els.yarnBall);
-  requestAnimationFrame(update);
-};
