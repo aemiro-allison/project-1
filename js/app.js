@@ -3,6 +3,8 @@ let boundary = {};
 const keys = {};
 let yarnBall = null;
 let obs1 = null;
+let obstacles = [];
+let obsSpawningId = null;
 
 //   // Àlex Garcés implementation on Stack Overflow from Mar 13 '16
 //   // https://stackoverflow.com/questions/2440377/javascript-collision-detection
@@ -18,24 +20,31 @@ let obs1 = null;
 //     );
 //   };
 
-function changeBgColor($el1, $el2) {
-  const shouldChangeBg = yarnBall.isCollide($el1, $el2);
-  if (shouldChangeBg) {
-    $el1.css('background', 'green');
-    $el2.css('background', 'green');
-  } else {
-    $el1.css('background', 'grey');
-    $el2.css('background', 'grey');
+const genNumBetween = (min, max) => Math.random() * ((max - min) - min);
+
+function spawnNewObstacle(num, interval) {
+  if (num % interval === 0) {
+    obstacles.push(new Obstacle(boundary.right + 300));
   }
 }
-class Obstacle {
-  constructor(y, width, height) {
-    // uniquely idenity each obstacle
-    this.id = Math.floor(Math.random() * 2);
 
-    this.y = y;
-    this.x = boundary.right + 200;
-    this.speed = 5;
+// function changeBgColor($el1, $el2) {
+//   const shouldChangeBg = yarnBall.isCollide($el1, $el2);
+//   if (shouldChangeBg) {
+//     $el1.css('background', 'green');
+//     $el2.css('background', 'green');
+//   } else {
+//     $el1.css('background', 'grey');
+//     $el2.css('background', 'grey');
+//   }
+// }
+class Obstacle {
+  constructor(x, y, width = genNumBetween(10, 150), height = genNumBetween(100, 600)) {
+    this.y = y || genNumBetween(100, boundary.bottom);
+    this.x = x || boundary.right + 300;
+    this.speed = 8;
+    this.width = width;
+    this.height = height;
 
     // create obstacle element.
     this.el = $('<div>');
@@ -53,8 +62,8 @@ class Obstacle {
   }
 
   move() {
-    if (this.x === 'removed') return;
-    if (this.x <= boundary.left) {
+    if (this.x === 'removed') console.log('this remove ran');
+    if ((this.x + this.width) <= boundary.left) {
       this.x = 'removed';
       this.remove();
     }
@@ -64,6 +73,8 @@ class Obstacle {
 
   remove() {
     this.el.detach().remove();
+    // obstacles.splice(this.id, 1);
+    obstacles.pop();
     console.log('removed');
   }
 }
@@ -75,12 +86,13 @@ class Player {
     this.y = yAxis;
     this.xVel = 0;
     this.yVel = 0;
-    this.speed = 5;
+    this.speed = 10;
     this.friction = 0.88;
     this.gravity = 5;
     this.isJumping = false;
     this.jumpingIntervalID = null;
     this.bounce = 0.6;
+    this.resolve = this.resolve.bind(this);
   }
 
   draw($el) {
@@ -98,14 +110,30 @@ class Player {
     }
   }
 
-  resolve(shouldResolve) {
+  resolve(shouldResolve, $el, obs) {
+    // calculate the displacement
+    // add to the velocity.
     if (shouldResolve) {
-      if (keys[32]) {
+      if (keys[32] && !this.isJumping) {
         this.jump(this.jumpingIntervalID);
       }
-      this.xVel -= obs1.speed + this.speed;
-      this.x -= this.xVel * this.bounce;
-      this.yVel -= 0.5;
+
+      if ($el.position().left < obs.el.position().left) {
+        // handle left
+
+        this.xVel -= (obs.speed + this.speed) * this.friction;
+        this.x += this.speed * this.bounce;
+      } else if ($el.position().top > obs.el.position().top) {
+        // handle top
+        this.yVel -= -(2);
+      } else if (!($el.position().top > obs.el.position().top)) {
+        // handle bottom
+        this.yVel += -(3);
+      } else {
+        // handle right
+        this.xVel += obs.speed + this.speed;
+        // this.x -= (this.xVel -= 0.2) * this.bounce;
+      }
     }
   }
 
@@ -132,14 +160,14 @@ class Player {
       this.isJumping = true;
 
       this.jumpingIntervalID = setInterval(() => {
-        if (counter === 20) {
+        if (counter === 15) {
           this.isJumping = false;
           clearInterval(this.jumpingIntervalID);
         }
 
-        counter += 2;
-        console.log('interval');
-        this.y -= 25 * this.friction;
+        counter += 1;
+        this.y -= this.speed * this.friction;
+        this.xVel += 0.5;
       }, 1000 / 60);
     }
   }
@@ -164,13 +192,13 @@ class Player {
     // move to right
     if (keys[68]) {
       if (this.xVel < this.speed) {
-        this.xVel += 2.5;
+        this.xVel += 2;
       }
     }
     // move to left
     if (keys[65]) {
       if (this.xVel > -this.speed) {
-        this.xVel -= 1;
+        this.xVel -= 2;
       }
     }
 
@@ -217,12 +245,30 @@ $('#toggle-drawer').click((evt) => {
   $els.gameBar.toggleClass('drawer');
 });
 
+const manageObstaclePhysics = () => {
+  obstacles.forEach((obstacle) => {
+    obstacle.draw();
+    yarnBall.resolve(
+      yarnBall.isCollide($els.yarnBall, obstacle.el),
+      $els.yarnBall,
+      obstacle,
+    );
+  });
+};
+
+
+let counter = 0;
 const update = () => {
   yarnBall.draw($els.yarnBall);
-  obs1.draw();
-  yarnBall.resolve(yarnBall.isCollide($els.yarnBall, obs1.el));
+
+  spawnNewObstacle(counter+=1, 100);
+
+  manageObstaclePhysics();
+  // resolve any collision with any obstacle
   // changeBgColor($els.yarnBall, obs1.el);
-  requestAnimationFrame(update);
+  setTimeout(() => {
+    requestAnimationFrame(update);
+  }, 1000 / 60);
 };
 
 $(document).ready(() => {
@@ -243,7 +289,6 @@ $(document).ready(() => {
   };
 
   yarnBall = new Player(boundary.left, boundary.bottom);
-  obs1 = new Obstacle(500, 10, 300);
 
   requestAnimationFrame(update);
 });
