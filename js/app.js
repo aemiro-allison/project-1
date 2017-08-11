@@ -107,6 +107,8 @@ class Player {
     // is reached.
     if (this.y <= boundary.bottom && !keys[87] && !this.isJumping) {
       this.y += ((this.yVel += 0.3) * this.gravity * this.friction);
+    } else {
+      this.yVel -= 1;
     }
   }
 
