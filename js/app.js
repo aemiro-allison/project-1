@@ -2,6 +2,7 @@ let $els = {};
 let boundary = {};
 const keys = {};
 let yarnBall = null;
+let obs1 = null;
 
 //   // Àlex Garcés implementation on Stack Overflow from Mar 13 '16
 //   // https://stackoverflow.com/questions/2440377/javascript-collision-detection
@@ -17,36 +18,56 @@ let yarnBall = null;
 //     );
 //   };
 
-// function changeBgColor(shouldChangeBg) {
-//   if (shouldChangeBg) {
-//     $els.nyanCat[0].style.backgroundColor = 'green';
-//     $els.yarnBall[0].style.backgroundColor = 'green';
-//   } else {
-//     $els.nyanCat[0].style.backgroundColor = 'grey';
-//     $els.yarnBall[0].style.backgroundColor = 'grey';
-//   }
-// }
+function changeBgColor($el1, $el2) {
+  const shouldChangeBg = yarnBall.isCollide($el1, $el2);
+  if (shouldChangeBg) {
+    $el1.css('background', 'green');
+    $el2.css('background', 'green');
+  } else {
+    $el1.css('background', 'grey');
+    $el2.css('background', 'grey');
+  }
+}
 class Obstacle {
   constructor(y, width, height) {
-    // create obstacle element.
-    this.el = $('<div>');
-    this.el.css('width', width);
-    this.el.css('height', height);
-    this.el.attr('class', 'obstacle');
-    this.el.appendTo('#obstacles');
-
     // uniquely idenity each obstacle
     this.id = Math.floor(Math.random() * 2);
 
     this.y = y;
-    this.x = boundary.right + 300;
+    this.x = boundary.right + 200;
     this.speed = 5;
+
+    // create obstacle element.
+    this.el = $('<div>');
+    this.el.css('width', width);
+    this.el.css('height', height);
+    this.el.css('left', this.x);
+    this.el.css('top', this.y);
+    this.el.attr('class', 'obstacle');
+    this.el.appendTo('#obstacle-spawn');
+  }
+
+  draw() {
+    this.move();
+    this.el.css('left', this.x);
   }
 
   move() {
+    if (this.x === 'removed') return;
+    if (this.x <= boundary.left) {
+      this.x = 'removed';
+      this.remove();
+    }
+
     this.x -= this.speed;
   }
+
+  remove() {
+    this.el.detach().remove();
+    console.log('removed');
+  }
 }
+
 
 class Player {
   constructor(xAxis, yAxis) {
@@ -56,8 +77,10 @@ class Player {
     this.yVel = 0;
     this.speed = 5;
     this.friction = 0.88;
-    this.gravity = 10;
+    this.gravity = 5;
     this.isJumping = false;
+    this.jumpingIntervalID = null;
+    this.bounce = 0.6;
   }
 
   draw($el) {
@@ -75,6 +98,17 @@ class Player {
     }
   }
 
+  resolve(shouldResolve) {
+    if (shouldResolve) {
+      if (keys[32]) {
+        this.jump(this.jumpingIntervalID);
+      }
+      this.xVel -= obs1.speed + this.speed;
+      this.x -= this.xVel * this.bounce;
+      this.yVel -= 0.5;
+    }
+  }
+
   isCollide(a, b) {
     const aRect = a[0].getBoundingClientRect();
     const bRect = b[0].getBoundingClientRect();
@@ -87,20 +121,25 @@ class Player {
     );
   }
 
-  jump() {
+  jump(id) {
     let counter = 0;
-    if (!this.isJumping && (this.y >= boundary.bottom)) {
+    if (id) {
+      this.isJumping = false;
+      clearInterval(id);
+    }
+
+    if ((!this.isJumping && (this.y >= boundary.bottom)) || id) {
       this.isJumping = true;
 
-      const id = setInterval(() => {
+      this.jumpingIntervalID = setInterval(() => {
         if (counter === 20) {
           this.isJumping = false;
-          clearInterval(id);
+          clearInterval(this.jumpingIntervalID);
         }
 
         counter += 2;
         console.log('interval');
-        this.y -= 30 * this.friction;
+        this.y -= 25 * this.friction;
       }, 1000 / 60);
     }
   }
@@ -125,7 +164,7 @@ class Player {
     // move to right
     if (keys[68]) {
       if (this.xVel < this.speed) {
-        this.xVel += 1;
+        this.xVel += 2.5;
       }
     }
     // move to left
@@ -180,7 +219,9 @@ $('#toggle-drawer').click((evt) => {
 
 const update = () => {
   yarnBall.draw($els.yarnBall);
-  // changeBgColor(isCollide($els.yarnBall, $els.nyanCat));
+  obs1.draw();
+  yarnBall.resolve(yarnBall.isCollide($els.yarnBall, obs1.el));
+  // changeBgColor($els.yarnBall, obs1.el);
   requestAnimationFrame(update);
 };
 
@@ -189,6 +230,7 @@ $(document).ready(() => {
     gameBar: $('#game-bar'),
     toggleDrawerBtn: $('#toggle-drawer'),
     gameWindow: $('#game-window'),
+    obstacleSpawn: $('#obstacle-spawn'),
     nyanCat: $('#nyan-cat'),
     yarnBall: $('#yarn-ball'),
   };
@@ -201,6 +243,7 @@ $(document).ready(() => {
   };
 
   yarnBall = new Player(boundary.left, boundary.bottom);
+  obs1 = new Obstacle(500, 10, 300);
 
   requestAnimationFrame(update);
 });
