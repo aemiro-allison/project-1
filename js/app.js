@@ -24,7 +24,7 @@ const genNumBetween = (min, max) => Math.random() * ((max - min) - min);
 
 function spawnNewObstacle(num, interval) {
   if (num % interval === 0) {
-    obstacles.push(new Obstacle(boundary.right + 300));
+    obstacles.push(new Obstacle());
   }
 }
 
@@ -39,10 +39,10 @@ function spawnNewObstacle(num, interval) {
 //   }
 // }
 class Obstacle {
-  constructor(x, y, width = genNumBetween(10, 150), height = genNumBetween(100, 600)) {
-    this.y = y || genNumBetween(100, boundary.bottom);
-    this.x = x || boundary.right + 300;
-    this.speed = 8;
+  constructor(x, y, width = genNumBetween(10, 150), height = genNumBetween(200, boundary.bottom)) {
+    this.y = y || genNumBetween(10, boundary.bottom);
+    this.x = x || boundary.right + 100;
+    this.speed = 9;
     this.width = width;
     this.height = height;
 
@@ -65,7 +65,7 @@ class Obstacle {
     if (this.x === 'removed') console.log('this remove ran');
     if ((this.x + this.width) <= boundary.left) {
       this.x = 'removed';
-      this.remove();
+      return this.remove();
     }
 
     this.x -= this.speed;
@@ -74,9 +74,13 @@ class Obstacle {
   remove() {
     this.el.detach().remove();
     // obstacles.splice(this.id, 1);
-    obstacles.pop();
+    return removeObstacle();
     console.log('removed');
   }
+}
+
+function removeObstacle() {
+  obstacles.pop();
 }
 
 
@@ -108,7 +112,7 @@ class Player {
     if (this.y <= boundary.bottom && !keys[87] && !this.isJumping) {
       this.y += ((this.yVel += 0.3) * this.gravity * this.friction);
     } else {
-      this.yVel -= 1;
+      this.xVel *= this.friction;
     }
   }
 
@@ -132,10 +136,14 @@ class Player {
         // handle bottom
         this.yVel += -(3);
       } else {
-        // handle right
-        this.xVel += obs.speed + this.speed;
-        // this.x -= (this.xVel -= 0.2) * this.bounce;
+        this.xVel -= -(2);
       }
+
+      // if (!($el.position().left < obs.el.position().left)) {
+      //   // handle right
+      //   this.xVel += obs.speed + this.speed;
+      //   this.x -= (this.xVel -= 0.2) * this.bounce;
+      // }
     }
   }
 
@@ -263,7 +271,7 @@ let counter = 0;
 const update = () => {
   yarnBall.draw($els.yarnBall);
 
-  spawnNewObstacle(counter+=1, 100);
+  spawnNewObstacle(counter += 1, 200);
 
   manageObstaclePhysics();
   // resolve any collision with any obstacle
