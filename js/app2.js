@@ -46,21 +46,23 @@ $(document).ready(() => {
 
   // Start the game on initial load.
   gameLifeCycle = run();
-
-  createObstacle();
+  // Start creating obstacles.
+  createObstacles();
 
   // pause game when user clicks away.
-  $(window).on('unload', () => {
+  $(window).on('blur', () => {
     // Pause the game when user clicks away from
     // the game.
     // Possibly to navigate to another tab/window.
     cancelAnimationFrame(gameLifeCycle);
+    console.log('cleared everything');
   });
 
   // restart game when user comes back.
-  $(window).on('load', () => {
+  $(window).on('focus', () => {
     // Start the game.
     gameLifeCycle = run();
+    console.log('created everything again.');
   });
 });
 
@@ -167,9 +169,11 @@ function renderWithInterpolation(lagOffset) {
   // render each object one by one.
 }
 
-function createObstacle() {
+function createObstacles() {
   setInterval(() => {
-    obstacles.push(new Obstacle($('<div>'), gameWindow.right, gameWindow.bottom / 2, 100, 400));
+    if (document.hasFocus()) {
+      obstacles.push(new Obstacle($('<div>'), gameWindow.right, gameWindow.bottom / 2, 100, 400));
+    }
   }, 5000);
 }
 
