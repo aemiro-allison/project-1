@@ -1,3 +1,13 @@
+// TODO: put nyan cat gif or image on screen. done
+// TODO: infinite background loop. done
+// TODO: Create landing page with form and instructions and use them in game.
+
+// Next:
+// TODO: give player ability to jump and only use left and right keys and up key for movement.
+// TODO: Critical (make the obstacles functional).
+// TODO: Implement game winning states.
+
+
 // container to hold all the constant DOM elements
 // to be used in-game.
 let $els = null;
@@ -13,6 +23,7 @@ const gameWindow = {
 // being pressed.
 const keys = [];
 
+let gameLifeCycle = undefined;
 let obstacles = [];
 let yarnBall = null;
 
@@ -32,18 +43,25 @@ $(document).ready(() => {
   // create borders
   gameWindow.right = window.innerWidth - yarnBall.width;
   gameWindow.bottom = window.innerHeight - yarnBall.height;
-  // Start the game.
-  const gameLifeCycle = run();
 
-  $(window).on( 'unload',() => {
+  // Start the game on initial load.
+  gameLifeCycle = run();
+
+  createObstacle();
+
+  // pause game when user clicks away.
+  $(window).on('unload', () => {
+    // Pause the game when user clicks away from
+    // the game.
+    // Possibly to navigate to another tab/window.
     cancelAnimationFrame(gameLifeCycle);
   });
 
-  $(window).load(() => {
-    run();
+  // restart game when user comes back.
+  $(window).on('load', () => {
+    // Start the game.
+    gameLifeCycle = run();
   });
-
-  createObstacle();
 });
 
 // Add each key pressed into an array of keys
