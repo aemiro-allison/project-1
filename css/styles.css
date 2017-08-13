@@ -116,7 +116,7 @@ h1,h2,h3,h4,h5,h6 {
 
 #landing-page {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
   height: 100%;
   background-image: url('https://i.ytimg.com/vi/t15c2Cfqhes/maxresdefault.jpg');
@@ -214,6 +214,15 @@ h1,h2,h3,h4,h5,h6 {
 /* End of Landing Page Styles */
 
 
+.fadeOut {
+  animation: fadeOut 1.5s ease-out;
+}
+
+/* Landing Page Fade Out*/
+@keyframes fadeOut {
+  0% { opacity: 100%; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
 
 /* Infinite Background Loop */
 @keyframes bgLoop {

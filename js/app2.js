@@ -178,9 +178,28 @@ function createObstacles() {
   }, 5000);
 }
 
+// landing page handler.
+$(document).on('keypress', (evt) => {
+  if (evt.keyCode === 13) {
+    fadeOut($els.$landingPage);
+  }
+});
 
 /* HELPER FUNCTIONS */
 
 function getTimestamp() {
   return window.performance.now();
+}
+
+function animate(el, animationName, callback = () => {}, remove = true) {
+  el.classList.toggle(animationName);
+  el.addEventListener('animationend', function animationHandler() {
+    if (remove) el.classList.toggle(animationName);
+    el.removeEventListener('animationend', animationHandler);
+    callback(el);
+  });
+};
+
+function fadeOut(el) {
+  animate(el[0], 'fadeOut', () => { el.css({ display: 'none' }); });
 }
