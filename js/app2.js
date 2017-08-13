@@ -30,6 +30,7 @@ let yarnBall = null;
 $(document).ready(() => {
   // get the elements after DOM has loaded.
   $els = {
+    $landingPage: $('#landing-page'),
     $gameBar: $('#game-bar'),
     $toggleDrawerBtn: $('#toggle-drawer'),
     $gameWindow: $('#game-window'),
