@@ -10,7 +10,7 @@
 // Next:
 // TODO: move drawer to top of screen.
 // TODO: add sounds.
-// TODO: save high scores of players.
+// TODO: save high scores of player.
 // TODO: Refractor code.
 
 
@@ -57,7 +57,7 @@ $(document).ready(() => {
   // make nyan cat move as well.
   nyanCat.move = function move() {
     this.previousX = this.x;
-    this.xy = 0.5;
+    this.xy = 0.3;
     this.x += this.xy;
   };
 
@@ -93,8 +93,8 @@ $(document).ready(() => {
     const values = $(this).serialize().split('=');
     // check if a value was entered.
     if (values[1]) {
-      $els.$player.html(values[1]);
-      $els.$score.html('0');
+      $els.$player.html(`<span class="highlight">Player</span> ${values[1]}`);
+      $els.$score.html(`<span class="highlight">Score</span> ${score}`);
       fadeOut($els.$landingPage);
 
       // Start the game after submit.
@@ -135,7 +135,7 @@ $(window).on('resize', () => {
 
 
 // The desired fps to run update game logic.
-const fps = 30;
+const fps = 60;
 
 // The base time that each frame should take before
 // another frame is updated.
@@ -202,7 +202,7 @@ let gameOver = false;
 function update() {
   // Update all objects positions
   yarnBall.move();
-  nyanCat.move();
+  if (farthest >= gameWindow.right / 3) nyanCat.move();
   obstacles.forEach((obstacle) => {
     obstacle.move();
     // Resolve any collision between player and an obstacle.
@@ -212,24 +212,25 @@ function update() {
   // get the farthest the player has reched.
   farthest = farthest > yarnBall.x ? farthest : yarnBall.x;
 
-  // check if player won
-  if (yarnBall.x <= nyanCat.x && !gameOver) {
+  // Check if the yarnBall is touching the left border or
+  // if he/she has passed the nyan cat, he/she loses.
+  if ((yarnBall.x <= nyanCat.x && !gameOver) || (yarnBall.x === gameWindow.left && !gameOver)) {
     console.log('the cat caught you');
     fadeIn($els.$landingPage);
     $els.$gameLogin.html(`
       <p>Oh no, he caught you.</p>
       <p>Bad Nyan Cat!.</p>
-      <p>Your score was: ${score}</p>
+      <p>Your score was: <span class="highlight">${score}</span></p>
     `);
     // stop game here.
     gameOver = true;
   } else if (yarnBall.x >= gameWindow.right && !gameOver) {
     console.log('you won');
     fadeIn($els.$landingPage);
-    $els.$gameLogin.html(
-      `Omg! You beat the Nyan Cat.
-      Your the best!!!!.
-      Your score was: ${score}
+    $els.$gameLogin.html(`
+      <p>Omg! You beat the Nyan Cat.</p>
+      <p>Your the best!!!!.</p>
+      <p>Your score was: <span class="highlight">${score}</span></p>
     `);
     // stop game here.
     gameOver = true;
@@ -240,7 +241,7 @@ function update() {
   // keep calculations small to help performance.
   if (scoreUpater >= 1000) scoreUpater = 100;
   score += scoreUpater % 100 === 0 ? 50 : 0;
-  $els.$score.text(score);
+  $els.$score.html(`<span class="highlight">Score</span> ${score}`);
 
   // show player how far they are.
   $els.$gameProgress.val(`${yarnBall.x}`);
@@ -257,23 +258,10 @@ function renderWithInterpolation(lagOffset) {
 function createObstacles() {
   setInterval(() => {
     if (document.hasFocus()) {
-      obstacles.push(new Obstacle($('<div>'), gameWindow.right, random(50, gameWindow.bottom), 180, 90));
+      obstacles.push(new Obstacle($('<div>'), gameWindow.right + 200, random(20, gameWindow.bottom), 180, 90));
     }
-  }, 1000);
+  }, (1000000 / window.innerHeight)*0.5 );
 }
-
-// landing page handler.
-$(document).on('keypress', (evt) => {
-  if (evt.keyCode === 32) {
-    $els.$gameBar.toggleClass('drawer');
-  }
-
-  if (evt.keyCode === 100) {
-    console.log('fade in');
-    fadeIn($els.$landingPage);
-    $els.$gameLogin.append('game in progress.');
-  }
-});
 
 
 /* HELPER FUNCTIONS */

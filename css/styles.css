@@ -135,25 +135,47 @@ h1,h2,h3,h4,h5,h6 {
 
 
 
-/* Game Bar drawer styles */
-
-/* the game bar is the drawer*/
+/* Game Bar styles */
 #game-bar {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   box-sizing: border-box;
-  width: 300px;
-  height: 100%;
-  background-color: dodgerblue;
+  height: 40px;
+  width: 460px;
   padding: 10px;
-  left: -300px;
-  transition: transform .3s ease-in;
+  left: calc(50% - 200px);
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.drawer {
-  transform: translateX(300px);
+#player, #score, #game-progress {
+  text-transform: uppercase;
+  line-height: 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color: rgb(255,254,30);
 }
-/* End of Game Bar drawer styles */
+
+#game-progress {
+  -webkit-appearance: none;
+  height: 10px;
+  background: #444;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 2px;
+  height: 20px;
+  background: rgb(255,254,30);
+}
+
+.highlight {
+  color: #ddd;
+  font-size: 17px;
+}
+/* End of Game Bar Styles */
 
 
 /* Container styles */
@@ -170,7 +192,7 @@ h1,h2,h3,h4,h5,h6 {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  background-color: limegreen;
+  background-color: #111;
   background-image: url('https://s3-us-west-2.amazonaws.com/i.cdpn.io/86939.BKJun.1ddac0a8-d1a3-4259-84d7-f59773c308c7.png');
   background-size: cover;
   background-position: 0 0;
@@ -208,14 +230,12 @@ h1,h2,h3,h4,h5,h6 {
   position: absolute;
   top:0;
   right: -200px;
-  background: green;
 }
 /* End of Container styles */
 
 .obstacle {
   position: fixed;
   z-index: 1;
-  /*background: #444;*/
   background-image: url('http://static.tumblr.com/abf7675553cbce6bc862585be2b4cf27/cf5rzyh/nqenbwzrz/tumblr_static_4immwp0i3r0gc848wow480oos.gif');
   background-position: center;
   background-size: cover;

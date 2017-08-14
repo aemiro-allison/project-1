@@ -1,7 +1,7 @@
 const Physics = Object.freeze({
-  GRAVITY: 0.58,
+  GRAVITY: 0.38,
   FRICTION: 0.95,
-  BOUNCE: 1.5,
+  BOUNCE: 1.2,
 });
 
 

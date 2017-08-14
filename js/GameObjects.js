@@ -19,11 +19,11 @@ class Player extends PhysicsEntity {
 
     // move to top
     if (keys[87]) {
-      this.yv -= 0.8 / Physics.GRAVITY;
+      this.yv -= 0.3 / Physics.GRAVITY;
     }
     // move to bottom
     if (keys[83]) {
-      this.yv += 0.5;
+      this.yv += 0.25;
     }
     // // move to right
     // if (keys[68]) {
@@ -41,7 +41,7 @@ class Player extends PhysicsEntity {
     // by using the updated velocity to move.
     this.xv *= Physics.FRICTION;
     this.yv += Physics.GRAVITY;
-    this.x += this.xv + 1;
+    this.x += this.xv + 0.25;
     this.y += this.yv;
 
     // bounds checking for left to right
@@ -130,7 +130,7 @@ class Obstacle extends PhysicsEntity {
     this.previousY = this.y;
 
     // TODO: Update the velocity for time. ( constant velocity)
-    this.xv += this.accelerationX + 0.2;
+    this.xv += this.accelerationX + 0.1;
 
     // Update the positional values for the entity
     // by using the updated velocity to move.
