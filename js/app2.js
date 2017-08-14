@@ -269,7 +269,7 @@ function update() {
   score += scoreUpater % 100 === 0 ? 50 : 0;
 
   // show the player's current score.
-  $els.$score.html(`<span class="highlight">Score</span> ${score}`);
+  $els.$score.html(`Score <span class="highlight">${score}</span>`);
 
   // show player how far they are.
   $els.$gameProgress.val(`${yarnBall.x}`);
