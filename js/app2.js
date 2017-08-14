@@ -91,7 +91,8 @@ $(document).ready(() => {
     evt.stopPropagation();
 
     // get all the values from all the elements.
-    const values = $(this).serialize().split('=');
+    const values = $(this).serialize().split('&')[1].split('=');
+    // console.log(values);
 
     // check if a value was entered.
     if (values[1]) {
