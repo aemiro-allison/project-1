@@ -52,7 +52,7 @@ PhysicsEntity.prototype.draw = function draw(lagOffset) {
 
   // render new position to screen.
   this.el.css({
-    left: `${this.renderX}px`,
-    top: `${this.renderY}px`,
+    left: `${Math.round(this.renderX)}px`,
+    top: `${Math.round(this.renderY)}px`,
   });
 };

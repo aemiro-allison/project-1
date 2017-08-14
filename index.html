@@ -16,8 +16,8 @@
 
     <form action="#" id="game-login">
       <img src="https://lh5.ggpht.com/nct7SKXWQ3vQYQki0hQEGidMPxk_-8JqkhPnSWEjuv8bF3pd2Qj3RuAa-5IXa_hCdQ=w170" alt="nyan-cat">
-      <input name="nickname" id="nickname" type="text" placeholder="nickname">
-      <input type="submit" value="START">
+      <input name="nickname" id="nickname" type="text" placeholder="nickname" autofocus>
+      <input type="submit" value="GO!">
     </form>
 
     <div id="game-instructions">
@@ -30,8 +30,12 @@
 
   <!-- Game Window -->
   <div id="wrapper">
-    <button id="toggle-drawer">Game Stats</button>
-    <div id="game-bar"></div>
+    <!-- <button id="toggle-drawer">Game Stats</button> -->
+    <div id="game-bar">
+      <span id="player"></span>
+      <span id="score"></span>
+      <input type="range" id="game-progress">
+    </div>
     <div id="game-window"></div>
   </div>
 
