@@ -5,7 +5,7 @@
 // Next:
 // TODO: give player ability to jump and only use left and right keys and up key for movement. done
 // TODO: Critical (make the obstacles functional). done
-// TODO: Implement game winning states.
+// TODO: Implement game winning states. done
 
 // Next:
 // TODO: move drawer to top of screen.
@@ -33,6 +33,7 @@ let gameLifeCycle = undefined;
 let obstaclesLifeCycle = undefined;
 let obstacles = [];
 let yarnBall = null;
+let nyanCat = null;
 
 $(document).ready(() => {
   // get the elements after DOM has loaded.
@@ -197,6 +198,7 @@ function gameLoop(timestamp) {
 let scoreUpater = 0;
 let score = 0;
 let farthest = 0;
+let gameOver = false;
 function update() {
   // Update all objects positions
   yarnBall.move();
@@ -209,6 +211,29 @@ function update() {
 
   // get the farthest the player has reched.
   farthest = farthest > yarnBall.x ? farthest : yarnBall.x;
+
+  // check if player won
+  if (yarnBall.x <= nyanCat.x && !gameOver) {
+    console.log('the cat caught you');
+    fadeIn($els.$landingPage);
+    $els.$gameLogin.html(`
+      <p>Oh no, he caught you.</p>
+      <p>Bad Nyan Cat!.</p>
+      <p>Your score was: ${score}</p>
+    `);
+    // stop game here.
+    gameOver = true;
+  } else if (yarnBall.x >= gameWindow.right && !gameOver) {
+    console.log('you won');
+    fadeIn($els.$landingPage);
+    $els.$gameLogin.html(
+      `Omg! You beat the Nyan Cat.
+      Your the best!!!!.
+      Your score was: ${score}
+    `);
+    // stop game here.
+    gameOver = true;
+  }
 
   // update score
   scoreUpater += 1;
