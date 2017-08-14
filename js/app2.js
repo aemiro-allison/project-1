@@ -66,7 +66,7 @@ $(document).ready(() => {
   // make nyan cat move as well.
   nyanCat.move = function move() {
     this.previousX = this.x;
-    this.xy = 0.3;
+    this.xy = 0.2;
     this.x += this.xy;
   };
 
