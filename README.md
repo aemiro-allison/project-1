@@ -22,7 +22,6 @@ Technology | Special Features
  --- | --- 
 Javascript | requestAnimationFrame
 CSS | animations, transitions, 
-HTML |canvas, image sprites. *(for image based animations)*
-Sprites(Images) | [Open Source Map Creator](http://www.mapeditor.org/)
+HTML | image gifs
 Physics | gravity, velocity, speed, collusion detection algorithm
 

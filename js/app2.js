@@ -2,7 +2,6 @@
 
 // TODO: add sounds.
 // TODO: save high scores of player.
-// TODO: Refractor code.
 
 
 // container to hold all the constant DOM elements
