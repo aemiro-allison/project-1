@@ -1,14 +1,5 @@
-// TODO: put nyan cat gif or image on screen. done
-// TODO: infinite background loop. done
-// TODO: Create landing page with form and instructions and use them in game. done.
+/* global Obstacle, Player, PhysicsEntity */
 
-// Next:
-// TODO: give player ability to jump and only use left and right keys and up key for movement. done
-// TODO: Critical (make the obstacles functional). done
-// TODO: Implement game winning states. done
-
-// Next:
-// TODO: move drawer to top of screen.
 // TODO: add sounds.
 // TODO: save high scores of player.
 // TODO: Refractor code.
@@ -17,6 +8,8 @@
 // container to hold all the constant DOM elements
 // to be used in-game.
 let $els = null;
+
+
 // defines the game boundary so that objects with
 // physics properties will not left this space.
 const gameWindow = {
@@ -25,15 +18,31 @@ const gameWindow = {
   right: 0,
   bottom: 0,
 };
+
+
 // an array hold all the keys that are currently
 // being pressed.
 const keys = [];
+let onlyRunOnce = 0;
 
-let gameLifeCycle = undefined;
-let obstaclesLifeCycle = undefined;
-let obstacles = [];
+
+// game life cycle id's used to end the game loop.
+let gameLifeCycle;
+let obstaclesLifeCycle;
+
+
+// elements to be dynamically updated on screen.
+const obstacles = [];
 let yarnBall = null;
 let nyanCat = null;
+
+
+// game values
+let score = 0;
+let scoreUpater = 0;
+let farthest = 0;
+let isGameOver = false;
+
 
 $(document).ready(() => {
   // get the elements after DOM has loaded.
@@ -65,48 +74,41 @@ $(document).ready(() => {
   gameWindow.right = window.innerWidth - yarnBall.width;
   gameWindow.bottom = window.innerHeight - yarnBall.height;
 
-
+  // initialize the game progress bar's limits.
   $els.$gameProgress.attr({ min: 0, max: gameWindow.right });
 
   // pause game when user clicks away.
   $(window).on('blur', () => {
-    // Pause the game when user clicks away from
+    // End the game when user clicks away from
     // the game.
     // Possibly to navigate to another tab/window.
     cancelAnimationFrame(gameLifeCycle);
-    $(document).blur();
-    console.log('cleared everything');
+    clearInterval(obstaclesLifeCycle);
   });
 
-  // restart game when user comes back.
-  $(window).on('focus', () => {
-    // Start the game.
-    if(score) {
-      gameLifeCycle = run();
-    }
-    console.log('created everything again.');
-  });
-  let runOnce = 0;
+  // get name of player then start the game.
   $els.$gameLogin.on('submit', function handleSubmit(evt) {
     evt.stopPropagation();
+
     // get all the values from all the elements.
     const values = $(this).serialize().split('=');
+
     // check if a value was entered.
     if (values[1]) {
-      $els.$player.html(`<span class="highlight">Player</span> ${values[1]}`);
-      $els.$score.html(`<span class="highlight">Score</span> ${score}`);
+      $els.$player.html(`Player <span class="highlight">${values[1]}</span>`);
+      $els.$score.html(`Score <span class="highlight">${score}</span>`);
       fadeOut($els.$landingPage);
 
       // Start the game after submit.
       gameLifeCycle = run();
+
       // Start creating obstacles.
       obstaclesLifeCycle = createObstacles();
-    } else {
-      if (!runOnce) {
-        $els.$gameLogin.append('Please enter a valid nickname.');
-        runOnce += 1;
-      }
+    } else if (!onlyRunOnce) {
+      $els.$gameLogin.append('Please enter a valid nickname.');
+      onlyRunOnce += 1;
     }
+
     evt.preventDefault();
   });
 });
@@ -134,6 +136,12 @@ $(window).on('resize', () => {
 });
 
 
+/* The Game Loop */
+// The game loop consist of a main looping function
+// to run the update the screen at 60 frames per second
+// and the physics and calculations of the game are
+// calculated at the frames per second defined below.
+
 // The desired fps to run update game logic.
 const fps = 60;
 
@@ -152,6 +160,9 @@ function run() {
   return requestAnimationFrame(gameLoop);
 }
 
+// Game Loop Implementation based on the book:
+// Advanced Game Design with HTML5 and JavaScript by Rex van der Spuy. pg: 177-185
+// ISBN: 9781430258018
 function gameLoop(timestamp) {
   // Tells the browser to free up CPU resources and
   // to run this function (render the next frame) when
@@ -185,7 +196,7 @@ function gameLoop(timestamp) {
 
   // The difference between update frame rate
   // and the game render frame rate.
-  let lagOffset = lag / frameDuration;
+  const lagOffset = lag / frameDuration;
 
   // Render the game graphics at the speed
   // of the requestAnimationFrame provides.
@@ -195,52 +206,69 @@ function gameLoop(timestamp) {
   previous = timestamp;
 }
 
-let scoreUpater = 0;
-let score = 0;
-let farthest = 0;
-let gameOver = false;
+
 function update() {
   // Update all objects positions
   yarnBall.move();
+
+  // when the player reaches a third of the way to
+  // the right boundary, start the nyan cat's movement.
   if (farthest >= gameWindow.right / 3) nyanCat.move();
+
+  // move each obstacle and resolve any collisions
+  // between any of the obstacles and the player.
   obstacles.forEach((obstacle) => {
     obstacle.move();
     // Resolve any collision between player and an obstacle.
     yarnBall.resolveCollision(obstacle);
   });
 
-  // get the farthest the player has reched.
+  // get the farthest distance the player has reched.
   farthest = farthest > yarnBall.x ? farthest : yarnBall.x;
 
   // Check if the yarnBall is touching the left border or
   // if he/she has passed the nyan cat, he/she loses.
-  if ((yarnBall.x <= nyanCat.x && !gameOver) || (yarnBall.x === gameWindow.left && !gameOver)) {
-    console.log('the cat caught you');
+  if ((yarnBall.x <= nyanCat.x && !isGameOver) || (yarnBall.x === gameWindow.left && !isGameOver)) {
+    // return to the landing page.
     fadeIn($els.$landingPage);
+
+    // display the loser's message.
     $els.$gameLogin.html(`
       <p>Oh no, he caught you.</p>
       <p>Bad Nyan Cat!.</p>
       <p>Your score was: <span class="highlight">${score}</span></p>
+      <button class="btn" onclick="location.reload()">NEW GAME</button>
     `);
-    // stop game here.
-    gameOver = true;
-  } else if (yarnBall.x >= gameWindow.right && !gameOver) {
-    console.log('you won');
+
+    // stop game state checking here.
+    isGameOver = true;
+  } else if (yarnBall.x >= gameWindow.right && !isGameOver) {
+    // return to the landing page.
     fadeIn($els.$landingPage);
+
+    // display the winner's message.
     $els.$gameLogin.html(`
       <p>Omg! You beat the Nyan Cat.</p>
       <p>Your the best!!!!.</p>
       <p>Your score was: <span class="highlight">${score}</span></p>
+      <button class="btn" onclick="location.reload()">NEW GAME</button>
     `);
-    // stop game here.
-    gameOver = true;
+
+    // stop game state checking here.
+    isGameOver = true;
   }
 
   // update score
   scoreUpater += 1;
+
   // keep calculations small to help performance.
   if (scoreUpater >= 1000) scoreUpater = 100;
+
+  // update score by each 100 runs of the update function
+  // or by each 100 pixels the player moves.
   score += scoreUpater % 100 === 0 ? 50 : 0;
+
+  // show the player's current score.
   $els.$score.html(`<span class="highlight">Score</span> ${score}`);
 
   // show player how far they are.
@@ -249,18 +277,25 @@ function update() {
 
 function renderWithInterpolation(lagOffset) {
   // Get all objects that need to be rendered.
+  // Render each object one by one.
   obstacles.forEach(obstacle => obstacle.draw(lagOffset));
   yarnBall.draw(lagOffset);
   nyanCat.draw(lagOffset);
-  // render each object one by one.
 }
 
+// create new obstacles
 function createObstacles() {
   setInterval(() => {
     if (document.hasFocus()) {
-      obstacles.push(new Obstacle($('<div>'), gameWindow.right + 200, random(20, gameWindow.bottom), 180, 90));
+      obstacles.push(new Obstacle(
+        $('<div>'), // create new element and append to screen.
+        gameWindow.right + 200, // x position
+        random(20, gameWindow.bottom), // y position
+        180, // width
+        90, // height
+      ));
     }
-  }, (1000000 / window.innerHeight)*0.5 );
+  }, (1000000 / window.innerHeight) * 0.5);
 }
 
 
@@ -280,7 +315,9 @@ function animate(el, animationName, callback = () => {}, remove = true) {
 }
 
 function fadeOut(el) {
-  animate(el[0], 'fadeOut', () => { el.css({ display: 'none' }); });
+  animate(el[0], 'fadeOut', () => {
+    el.css({ display: 'none' });
+  });
 }
 
 function fadeIn(el) {

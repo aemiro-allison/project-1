@@ -1,21 +1,11 @@
-class Player extends PhysicsEntity {
-  constructor(el, x, y, width, height) {
-    super(el, x, y, width, height);
-  }
+/* global $els, Physics, PhysicsEntity, keys, gameWindow, obstacles */
 
+
+class Player extends PhysicsEntity {
   move() {
     // get entity's previous position.
     this.previousX = this.x;
     this.previousY = this.y;
-
-    // perform any collision resolving only if a
-    // only if a object is colliding with player.
-    // this.resolveCollision(el);
-
-    // jump
-    // if (keys[32]) {
-    //   yarnBall.jump();
-    // }
 
     // move to top
     if (keys[87]) {
@@ -56,7 +46,7 @@ class Player extends PhysicsEntity {
     // bounds checking for top to bottom
     if (this.y >= gameWindow.bottom) {
       this.y = gameWindow.bottom;
-      this.yv = -this.yv/2;
+      this.yv = -this.yv / 2;
     } else if (this.y <= gameWindow.top) {
       this.y = gameWindow.top;
       this.yv = Math.abs(this.yv);
@@ -73,27 +63,24 @@ class Player extends PhysicsEntity {
     if (this.isCollide(el.el)) {
       if (this.x <= el.x) {
         // collision at left
-        this.xv = -(el.xv*1.4) * Physics.BOUNCE;
-        console.log('collision at left');
+        this.xv = -(el.xv * 1.4) * Physics.BOUNCE;
       } else if (this.y <= el.y) {
         // collision at top
-        this.yv -= (this.yv*1.4 + Physics.GRAVITY)*Physics.BOUNCE;
+        this.yv -= ((this.yv * 1.4) + Physics.GRAVITY) * Physics.BOUNCE;
         this.y += this.yv;
-        console.log('collision at top');
       // } else {
       } else if ((gameWindow.bottom - this.y) >= (gameWindow.bottom - el.y)) {
         // collision at bottom
         this.yv -= (this.yv * 2);
-        console.log('collision at bottom');
       } else if ((this.x + this.width) >= (el.x + el.width)) {
         // collision at right
-        // this.xv += (this.xv * 1.2);
         this.xv += -this.xv;
-        console.log('collision at right');
       }
     }
   }
 
+  // MDN 2D Collision Detection implementation.
+  // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
   isCollide(b) {
     const aRect = this.el[0].getBoundingClientRect();
     const bRect = b[0].getBoundingClientRect();

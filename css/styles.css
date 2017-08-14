@@ -2,7 +2,7 @@ html, body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  color: #f3f3f3;
+  color: #ddd;
   font-family: 'Roboto', serif;
   font-size: 16px;
 }
@@ -60,7 +60,7 @@ h1,h2,h3,h4,h5,h6 {
   margin: 8px;
 }
 
-#game-login input[type="submit"] {
+.btn {
   background: #FF4136;
   border: 1px solid rgba(0,0,0,0.2);
   padding: 8px 12px;
@@ -155,7 +155,6 @@ h1,h2,h3,h4,h5,h6 {
   line-height: 22px;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-  color: rgb(255,254,30);
 }
 
 #game-progress {
@@ -172,7 +171,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .highlight {
-  color: #ddd;
+  color: rgb(255,254,30);
   font-size: 17px;
 }
 /* End of Game Bar Styles */
@@ -247,33 +246,4 @@ input[type="range"]::-webkit-slider-thumb {
 @keyframes bgLoop {
   0% { background-position: 0 0; }
   100% { background-position: -100vw 0; }
-}
-
-/* Apply Desktop, Laptop styles */
-@media only screen  and (min-width : 1224px) {
-  #wrapper {
-    flex-direction: row;
-  }
-
-  #game-window {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-/* Apply Tablets, Smartphones styles */
-@media (min-width: 480px) and (max-width: 1080px) {
-  #wrapper {
-    flex-direction: column-reverse;
-  }
-
-  #game-bar {
-    width: 100%;
-    height: 20%;
-  }
-
-  #game-window {
-    width: 100%;
-    height: 80%;
-  }
 }

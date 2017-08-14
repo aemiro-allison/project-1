@@ -3,32 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nyan Cat Chase Game</title>
+  <title>Nyan Cat Furry Chase</title>
+
+  <!--  Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto" rel="stylesheet">
+
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
   <!-- Landing Page -->
   <div id="landing-page">
-  <div class="container">
-    <h1 id="game-title">Furry Speed Chase</h1>
+    <div class="container">
+      <h1 id="game-title">Nyan Cat Furry Chase</h1>
 
-    <form action="#" id="game-login">
-      <img src="https://lh5.ggpht.com/nct7SKXWQ3vQYQki0hQEGidMPxk_-8JqkhPnSWEjuv8bF3pd2Qj3RuAa-5IXa_hCdQ=w170" alt="nyan-cat">
-      <input name="nickname" id="nickname" type="text" placeholder="nickname" autofocus>
-      <input type="submit" value="GO!">
-    </form>
+      <form action="#" id="game-login">
+        <img src="https://lh5.ggpht.com/nct7SKXWQ3vQYQki0hQEGidMPxk_-8JqkhPnSWEjuv8bF3pd2Qj3RuAa-5IXa_hCdQ=w170" alt="nyan-cat">
+        <input name="nickname" id="nickname" type="text" placeholder="nickname" autofocus>
+        <input class="btn" type="submit" value="GO!">
+      </form>
 
-    <div id="game-instructions">
-      <h3>How To Play</h3>
-      <p>Up and Down Arrow to move. <br>
-      Survive by dodging the sleeping cats. <br>
-      Don't let the Nyan Cat catch you, hes bad.</p>
+      <div id="game-instructions">
+        <h3>How To Play</h3>
+        <p>Up and Down Arrow to move. <br>
+        Survive by dodging the sleeping cats. <br>
+        Don't let the Nyan Cat catch you, hes bad.</p>
+      </div>
+
     </div>
-
   </div>
-</div>
 
   <!-- Game Window -->
   <div id="wrapper">
@@ -40,14 +44,14 @@
     <div id="game-window"></div>
   </div>
 
+  <!-- dynamic elements -->
   <div id="nyan-cat"></div>
   <div id="yarn-ball"></div>
   <div id="obstacle-spawn"></div>
 
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <!-- <script src="js/Physics.js"></script> -->
-  <!-- <script src="js/app.js"></script> -->
-  <script src="js/PhysicsEntity.js"></script>
+  <script src="js/Physics.js"></script>
   <script src="js/GameObjects.js"></script>
   <script src="js/app2.js"></script>
 </body>
