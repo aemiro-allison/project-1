@@ -308,7 +308,7 @@ function createObstacles() {
 function newGame(evt) {
   evt.stopPropagation();
   evt.preventDefault();
-  window.location.href = 'index.html';
+  window.location.href = window.location.href;
 }
 
 function random(min, max) {
