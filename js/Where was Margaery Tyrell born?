@@ -1,0 +1,27 @@
+Where was Margaery Tyrell born?
+URL: http://anapioficeandfire.com/api/characters/16
+Accessed: response.born
+
+What region is House Targaryen in?
+URL: http://www.anapioficeandfire.com/api/houses/378
+Accessed: response.region
+
+What's the coat of arms of House Lannister?
+URL: http://www.anapioficeandfire.com/api/houses/229
+Accessed: response.coatOfArms
+
+What is the second seat of House Baratheon?
+URL: http://www.anapioficeandfire.com/api/houses/17
+Accessed: response.seats[1]
+
+What is Robert Baratheon's second alias?
+URL: http://www.anapioficeandfire.com/api/characters/901
+Accessed: response.aliases[1]
+
+What's the name of the founder of House Stark? (You may have to go through multiple Postman requests!)
+URL: http://www.anapioficeandfire.com/api/houses/362
+Accessed: response.founder, response.name
+
+What are the titles of Catelyn Stark's three POV books?
+URL: http://www.anapioficeandfire.com/api/characters/232
+Accessed:  response.povBook.forEach(book => response.name)

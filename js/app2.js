@@ -88,15 +88,19 @@ $(document).ready(() => {
   // get name of player then start the game.
   $els.$gameLogin.on('submit', function handleSubmit(evt) {
     evt.stopPropagation();
+    // TODO: fix dependency to bitballon.
 
     // get all the values from all the elements.
-    const values = $(this).serialize().split('&')[1].split('=');
-    // console.log(values);
+    const values = $(this).serialize().split('&').map(str => str.split('='));
+    console.log(values);
+    const nickname = values.filter(arr => arr[0] === 'nickname')[0];
+    console.log(nickname);
 
     // check if a value was entered.
-    if (values[1]) {
-      $els.$player.html(`Player <span class="highlight">${values[1]}</span>`);
+    if (nickname[1]) {
+      $els.$player.html(`Player <span class="highlight">${nickname[1]}</span>`);
       $els.$score.html(`Score <span class="highlight">${score}</span>`);
+      $('#nickname').hide();
       fadeOut($els.$landingPage);
 
       // Start the game after submit.
@@ -237,7 +241,7 @@ function update() {
       <p>Oh no, he caught you.</p>
       <p>Bad Nyan Cat!.</p>
       <p>Your score was: <span class="highlight">${score}</span></p>
-      <button class="btn" onclick="location.reload()">NEW GAME</button>
+      <button class="btn" onclick="newGame();">NEW GAME</button>
     `);
 
     // stop game state checking here.
@@ -251,7 +255,7 @@ function update() {
       <p>Omg! You beat the Nyan Cat.</p>
       <p>Your the best!!!!.</p>
       <p>Your score was: <span class="highlight">${score}</span></p>
-      <button class="btn" onclick="location.reload()">NEW GAME</button>
+      <button class="btn">NEW GAME</button>
     `);
 
     // stop game state checking here.
@@ -300,6 +304,12 @@ function createObstacles() {
 
 
 /* HELPER FUNCTIONS */
+
+function newGame(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+  window.location.href = 'index.html';
+}
 
 function random(min, max) {
   return (Math.random() * (max - min)) + min;

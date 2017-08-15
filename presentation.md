@@ -1,5 +1,7 @@
 # Presentation for Project 1 Game
 
+##### should include a wireframe of the game page.
+
 ### Features Included
 
 **PLayer can win or lose** and the game doesn't last long. A quick 2-3
@@ -29,8 +31,8 @@ the finish line.
 ### Technologies Used: 
     - jQuery
     - CSS Transitions/Animations
-    - Javascript requestAnimationFrame()
-    - Assets: gifs, png, jpg
+    - Javascript
+    - gifs images
 
 
 ### Constraints
