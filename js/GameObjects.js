@@ -117,7 +117,7 @@ class Obstacle extends PhysicsEntity {
     this.previousY = this.y;
 
     // TODO: Update the velocity for time. ( constant velocity)
-    this.xv += this.accelerationX + 0.1;
+    this.xv += this.accelerationX + 0.075;
 
     // Update the positional values for the entity
     // by using the updated velocity to move.
