@@ -17,8 +17,6 @@ The nyan cat will begin chasing the player who is the yarn ball. They will have 
 
 ## Phases of Completion
 
-<br>
-
 ### Wireframe of MVP
 ![wireframe of Furry Nyan Cat Chase](./readme-assets/wireframe.jpg)
 
@@ -30,40 +28,40 @@ The minimal viable product of this game would be allowing the player to move the
 
 ### Technologies Used
 
-Technology  | Special Features
-        --- | --- 
-Javascript  | requestAnimationFrame
-CSS         | animations, transitions 
-HTML        | images, sounds *future update*
-JQuery      | DOM manipulation
+Technology | Special Features
+--- | --- 
+Javascript | requestAnimationFrame
+CSS | animations, transitions 
+HTML | images, sounds *future update*
+JQuery | DOM manipulation
 
 <br>
 <br>
 
 ### Features Included
 
-**PLayer can win or lose** and the game doesn't last long. A quick 2-3
+- **Player can win or lose** and the game doesn't last long. A quick 2-3
 minute game.
 
-**Real World based movements** using physics calculations such as
+- **Real World based movements** using physics calculations such as
 applying gravity, having friction or having an object speeding up and
 when the player bounces into somethings else, it gets pushed by it.
 
-**A game progress bar** which lets the player known how far away from
+- **A game progress bar** which lets the player known how far away from
 the winning point they are and also serves as and indicator to the
 player, telling them that they are actually moving forward.
 
-**A player's score** is based on how long they took to win. The lower
+- **A player's score** is based on how long they took to win. The lower
 the better.
 
-**Smooth Page Transitions** for better UX when navigating between the
+- **Smooth Page Transitions** for better UX when navigating between the
 landing page and the game page.
 
-**Infinite background** to give the player an illusion that they are
+- **Infinite background** to give the player an illusion that they are
 moving forward at a fast pace when in reality, they are going 
 very slow.
 
-**Nyan Cat starts to chase you** down when you reach a third of the way to
+- **Nyan Cat starts to chase you** down when you reach a third of the way to
 the finish line.
 
 <br>
@@ -71,14 +69,14 @@ the finish line.
 
 ### Constraints
 
-Thankfully, there were not much constraints in regards to the content
+- Thankfully, there were not much constraints in regards to the content
 used in this project since of course, the Nyan Cat is really popular.
 
-Having to re-write the core of the project due to lack of knowledge
+- Having to re-write the core of the project due to lack of knowledge
 of recommended ways to make such a game, which is why it had to be
 re-wrote to use these new methods that I learnt.
 
-Due to time constraint, browser compatability was not taken into
+- Due to time constraint, browser compatability was not taken into
 consideration for this project. So it will certainly encounter errors
 when running in browsers other than Chrome and Firefox. This is will be
 resolved in the future.
